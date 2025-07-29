@@ -4,15 +4,14 @@
 
 This document provides a comprehensive overview of vector search concepts, data organization, embedding models, and practical implementation using Qdrant, particularly in the context of Large Language Model (LLM) applications like Retrieval Augmented Generation (RAG).
 
-In vector search, texts, images, or other data are transformed into vectorized representations (embeddings), and their similarity is measured numerically using similarity metrics like cosine similarity. Vector search introduces new capabilities beyond traditional keyword-based search. Instead of matching keywords, it works on the semantics level (meaning). This allows it to:
+In vector search, texts, images, or other data are transformed into vectorized representations (embeddings), and their similarity is measured numerically using similarity metrics like cosine similarity. Vector search introduces new capabilities beyond traditional keyword-based search. Instead of matching keywords, it works on the semantics level (meaning). **This allows it to**:
 
 - Match queries with different data modalities like images, videos, or sounds.
 - Match two different ideas expressed with different words but sharing the same meaning (e.g., "bat" and "flying mouse")
 
 Integrating vector search into a Retrieval Augmented Generation (RAG) workflow is straightforward with Qdrant. A typical RAG function consists of three main steps: Search -> Build Prompt -> LLM. The "search" step is replaceable, allowing you to plug in any search function.
- 
 
-#### Example Workflow
+### Example Workflow
 
 1. **Initialize Qdrant Client**: Connect to your running Qdrant instance.
 2. **Define Collection**: Create a collection in Qdrant with appropriate vector configuration (size, distance metric) and indexes for metadata if filtering is desired.
@@ -28,14 +27,15 @@ Integrating vector search into a Retrieval Augmented Generation (RAG) workflow i
 5. **Integrate into RAG**: Replace the existing search component in your RAG function with your newly created vector_search function. This modular approach makes it easy to switch between different search methods.
 
 #### Resources: 
-- Overview: https://qdrant.tech/articles/vector-search-manuals/
-- Qdrant Internals: https://qdrant.tech/articles/qdrant-internals/
-- RAG & GenAI: https://qdrant.tech/articles/rag-and-genai/
-- Practical Examples: https://qdrant.tech/articles/practicle-examples/ 
+- [**Qdrant Github Repo**](https://github.com/qdrant/qdrant_demo/)
+- [**Manuals**](https://qdrant.tech/articles/vector-search-manuals/)
+- [**Qdrant Internals**](https://qdrant.tech/articles/qdrant-internals/)
+- [**RAG & GenAI**](https://qdrant.tech/articles/rag-and-genai/)
+- [**Practical Examples**](https://qdrant.tech/articles/practicle-examples/)
 
 ## ⚙️ Qdrant
 
-Qdrant is an open-source vector search engine written in Rust, designed to make vector search scalable, fast, and production-ready for solutions involving millions or billions of vectors. Dedicated vector search solutions like Qdrant are needed for:
+[Qdrant](https://qdrant.tech) is an open-source vector search engine written in Rust, designed to make vector search scalable, fast, and production-ready for solutions involving millions or billions of vectors. Dedicated vector search solutions like Qdrant are needed for:
 
 - Scalability of vector search.
 - Staying in sync with the latest trends and research in vector search.
@@ -45,13 +45,13 @@ Qdrant's dashboard allows for visualizing data points. You can see uploaded payl
 
 ## ⚙️ FastEmbed: Qdrant's Library
 
-FastEmbed is recommended for its deep integration with Qdrant, simplifying the process of handling vectors and format conversions. It's lightweight, CPU-friendly, and uses ONNX runtime, making it faster than some alternatives. FastEmbed also supports local inference, meaning it doesn't incur external costs beyond your machine's resources. It supports various embedding types:
+[FastEmbed](https://qdrant.tech/documentation/fastembed/) is recommended for its deep integration with Qdrant, simplifying the process of handling vectors and format conversions. It's lightweight, CPU-friendly, and uses ONNX runtime, making it faster than some alternatives. FastEmbed also supports local inference, meaning it doesn't incur external costs beyond your machine's resources. It supports various embedding types:
 
 - Dense text embeddings: The most classical ones used in vector search (e.g., for semantic similarity today).
 - Sparse embeddings: Important for hybrid search.
 - Multi-vectors and image embeddings.
 
-# ⚙️ Dependencies 
+## ⚙️ Dependencies 
 **Dependencies are listed in `requirements.txt.`**
 
 To work with Qdrant in Python, you typically install two main libraries in your virtual environment:
@@ -72,9 +72,9 @@ To work with Qdrant in Python, you typically install two main libraries in your 
 | **`pillow`**             | Image processing utilities                 |
 | **`wandb`**              | Experiment tracking and visualization      |
 
-## ⚙️ Getting Started 
-[WILL CHANGE GIT CLONE LINK WHEN I MAKE REPO PUBLIC]
-### 1. Clone the Repository
+## ⚙️ Getting Started  
+
+#### 1. Clone the Repository
 ```bash
 git clone https://github.com/milanimcgraw/WandB-for-Gen-AI-Models.git
 cd WandB-for-Gen-AI-Models
@@ -83,18 +83,12 @@ cd WandB-for-Gen-AI-Models
 ```bash
 pip install -r requirements.txt
 ```
-#### 3. Make sure your wandb CLI is logged in:
-```bash
-wandb login
-```
-#### 4. Run each cell in order in a GPU-backed notebook or Codespaces environment!
+#### 3. Run each cell in order in a GPU-backed notebook or Codespaces environment!
 
-## ⚙️ Qdrant Setup
+## ⚙️ Qdrant Setup (Docker)
 
-Qdrant is flexible and can be run in various ways, including on your own infrastructure, Kubernetes, or in a managed cloud. For local setup, you can use a Docker container.
+Qdrant is flexible and can be run in various ways, including on your own infrastructure, Kubernetes, or in a managed cloud. For local setup, you can use a **Docker container**.
 
-- After pulling the Qdrant Docker image, you can run the container, mounting local storage to ensure data persistence.
-- Running Qdrant in Docker provides immediate access to its Web UI, which is beneficial for visually studying data and semantic similarity.
 
 ### Install qdrant and fastembed:
 
@@ -112,6 +106,9 @@ docker run -p 6333:6333 -p 6334:6334 \
    qdrant/qdrant
 ```
 
+- After pulling the Qdrant Docker image, you can run the container, mounting local storage to ensure data persistence.
+- Running Qdrant in Docker provides immediate access to its Web UI, which is beneficial for visually studying data and semantic similarity.
+
 # ⚙️ Additional Information
 
 ## Key Entities: Points and Collections
@@ -126,7 +123,7 @@ When setting up a Qdrant solution, you operate with two main entities:
   
 ## Creating and Populating Collections
 
-To create a Qdrant collection, you must provide:
+**To create a Qdrant collection, you must provide**:
 
 - A collection name (e.g., zoom_camp_rag or Zoom_camp_FAQ).
 - The size (dimensionality) of the embedding vectors (e.g., 512 dimensions).
