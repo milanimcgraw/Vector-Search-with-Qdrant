@@ -123,8 +123,8 @@ from qdrant_client import QdrantClient, models
 
 #### 1. Clone the Repository
 ```bash
-git clone https://github.com/milanimcgraw/Vector-Search-with-.git
-cd WandB-for-Gen-AI-Models
+git clone https://github.com/milanimcgraw/Vector-Search-with-Qdrant.git
+cd Vector-Search-with-Qdrant
 ```
 #### 2. Install Dependencies
 ```bash
