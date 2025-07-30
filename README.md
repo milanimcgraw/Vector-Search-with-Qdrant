@@ -33,7 +33,7 @@ In a typical RAG workflow—**Search → Build Prompt → LLM**—the search ste
 - To stay in sync with the latest trends and best practices;
 - To fully use vector search capabilities (including those beyond simple similarity search).
 
-[**Qdrant's**](https://qdrant.tech/)dashboard allows for visualizing data points. You can see uploaded payloads and vectors. More importantly, it projects the high-dimensional vectors to 2D, enabling you to visually study how points from different categories (e.g., courses) are semantically close or different based on their text content. This visual representation helps understand patterns in unstructured data and how vector search finds closest neighbors.
+[**Qdrant's**](https://qdrant.tech/) dashboard allows for visualizing data points. You can see uploaded payloads and vectors. More importantly, it projects the high-dimensional vectors to 2D, enabling you to visually study how points from different categories (e.g., courses) are semantically close or different based on their text content. This visual representation helps understand patterns in unstructured data and how vector search finds closest neighbors.
 
 ## ⚙️ FastEmbed: Qdrant's Library
 
