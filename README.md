@@ -2,81 +2,128 @@
 
 ## ⚙️ Project Overview
 
-This document provides a comprehensive overview of vector search concepts, data organization, embedding models, and practical implementation using Qdrant, particularly in the context of Large Language Model (LLM) applications like Retrieval Augmented Generation (RAG).
+Vector search enables machines to retrieve information based on meaning, not just keywords. By converting multimodal data—such as text, images, or audio—into dense vector embeddings, we can compare content semantically using metrics like cosine similarity.
 
-In vector search, texts, images, or other data are transformed into vectorized representations (embeddings), and their similarity is measured numerically using similarity metrics like cosine similarity. Vector search introduces new capabilities beyond traditional keyword-based search. Instead of matching keywords, it works on the semantics level (meaning). **This allows it to**:
+This project explores the fundamentals of vector search and its practical implementation using [**Qdrant**](https://qdrant.tech/), a high-performance vector database. It focuses on real-world applications in Large Language Model (LLM) pipelines, especially Retrieval-Augmented Generation (RAG).
 
-- Match queries with different data modalities like images, videos, or sounds.
-- Match two different ideas expressed with different words but sharing the same meaning (e.g., "bat" and "flying mouse")
+Unlike traditional keyword-based retrieval, **vector search allows you to:**
 
-Integrating vector search into a Retrieval Augmented Generation (RAG) workflow is straightforward with Qdrant. A typical RAG function consists of three main steps: Search -> Build Prompt -> LLM. The "search" step is replaceable, allowing you to plug in any search function.
+- Match semantically similar content, even if it uses different wording (e.g., *“bat”* vs. *“flying mouse”*).
+- Perform search across multimodal data types (e.g., text, images, video, or audio).
 
-### Example Workflow
-
-1. **Initialize Qdrant Client**: Connect to your running Qdrant instance.
-2. **Define Collection**: Create a collection in Qdrant with appropriate vector configuration (size, distance metric) and indexes for metadata if filtering is desired.
-3. **Embed and Index Data**:
-   - Iterate through your documents.
-   - For each document, combine relevant text (e.g., question + answer) into a single string.
-   - Use fastembed with the chosen model (e.g., Gina AI embedding) to vectorize this combined text.
-   - Store the vector along with its payload (original document, metadata like course/section) in Qdrant.
-4. **Wrap Search Logic**: Create a vector_search function that takes a query (question) and performs a Qdrant query_points operation.
-   - Inside this function, the query is embedded, and the search is performed against the collection.
-   - Filters can be applied to narrow down results based on metadata.
-   - The function processes the raw Qdrant response to extract the desired payload (the retrieved text).
-5. **Integrate into RAG**: Replace the existing search component in your RAG function with your newly created vector_search function. This modular approach makes it easy to switch between different search methods.
+In a typical RAG workflow—**Search → Build Prompt → LLM**—the search step is modular. [**Qdrant**](https://qdrant.tech/) seamlessly replaces keyword search with vector-based retrieval, improving the contextual relevance of prompts passed to the LLM.
 
 #### Resources: 
-- [**Qdrant Github Repo**](https://github.com/qdrant/qdrant_demo/)
+- [**Qdrant Github**](https://github.com/qdrant/qdrant_demo/)
+- [**FastEmbed**](https://qdrant.tech/documentation/fastembed/)
 - [**Manuals**](https://qdrant.tech/articles/vector-search-manuals/)
 - [**Qdrant Internals**](https://qdrant.tech/articles/qdrant-internals/)
-- [**RAG & GenAI**](https://qdrant.tech/articles/rag-and-genai/)
+- [**RAG & GenAI with Qdrant**](https://qdrant.tech/articles/rag-and-genai/)
+- [**Article: "Built for Vector Search"**](https://qdrant.tech/articles/dedicated-vector-search/)
 - [**Practical Examples**](https://qdrant.tech/articles/practicle-examples/)
 
 ## ⚙️ Qdrant
-
-[Qdrant](https://qdrant.tech) is an open-source vector search engine written in Rust, designed to make vector search scalable, fast, and production-ready for solutions involving millions or billions of vectors. Dedicated vector search solutions like Qdrant are needed for:
+[**Qdrant**](https://qdrant.tech/) is an **open-source vector search engine** written in Rust, designed to make vector search scalable, fast, and production-ready for solutions involving millions or billions of vectors. Dedicated vector search solutions like [**Qdrant**](https://qdrant.tech/) are needed for:
 
 - Scalability of vector search.
-- Staying in sync with the latest trends and research in vector search.
+- Staying in sync with the latest research and best practices in vector search
 - Utilizing full vector search capabilities beyond simple semantic similarity.
 
-Qdrant's dashboard allows for visualizing data points. You can see uploaded payloads and vectors. More importantly, it projects the high-dimensional vectors to 2D, enabling you to visually study how points from different categories (e.g., courses) are semantically close or different based on their text content. This visual representation helps understand patterns in unstructured data and how vector search finds closest neighbors.
+- To make production-level vector search at scale;
+- To stay in sync with the latest trends and best practices;
+- To fully use vector search capabilities (including those beyond simple similarity search).
+
+[**Qdrant's**](https://qdrant.tech/)dashboard allows for visualizing data points. You can see uploaded payloads and vectors. More importantly, it projects the high-dimensional vectors to 2D, enabling you to visually study how points from different categories (e.g., courses) are semantically close or different based on their text content. This visual representation helps understand patterns in unstructured data and how vector search finds closest neighbors.
 
 ## ⚙️ FastEmbed: Qdrant's Library
 
-[FastEmbed](https://qdrant.tech/documentation/fastembed/) is recommended for its deep integration with Qdrant, simplifying the process of handling vectors and format conversions. It's lightweight, CPU-friendly, and uses ONNX runtime, making it faster than some alternatives. FastEmbed also supports local inference, meaning it doesn't incur external costs beyond your machine's resources. It supports various embedding types:
-
+[**FastEmbed**](https://qdrant.tech/documentation/fastembed/) is recommended for its deep integration with [**Qdrant**](https://qdrant.tech/), simplifying the process of handling vectors and format conversions. It's lightweight, CPU-friendly, and uses ONNX runtime, making it faster than some alternatives. FastEmbed also supports local inference, meaning it doesn't incur external costs beyond your machine's resources. 
+**It supports various embedding types:**
 - Dense text embeddings: The most classical ones used in vector search (e.g., for semantic similarity today).
 - Sparse embeddings: Important for hybrid search.
 - Multi-vectors and image embeddings.
 
+## ⚙️ Workflow
+
+The following steps outline how to implement vector search with [**Qdrant**](https://qdrant.tech/) and integrate it into a Retrieval-Augmented Generation (RAG) pipeline:
+
+1. **Initialize the Qdrant Client**  
+   Connect to your running [**Qdrant**](https://qdrant.tech/) instance using the appropriate host and API configuration.
+
+2. **Define a Collection**  
+   Create a [**Qdrant**](https://qdrant.tech/) collection with the required vector size and distance metric (e.g., cosine). Optionally, define indexes for metadata fields if you plan to apply filters during search.
+
+3. **Embed and Index Your Data**  
+   - Iterate through your dataset or document list.  
+   - For each item, combine relevant fields (e.g., `question + answer`) into a single text string.  
+   - Use [`fastembed`](https://github.com/qdrant/fastembed) with your chosen model (e.g., `GinaAI/embedding-model`) to generate vector embeddings.  
+   - Store each vector in [**Qdrant**](https://qdrant.tech/) along with its associated payload (e.g., original text, metadata like course name or section ID).
+
+4. **Build a Search Function**  
+   Create a `vector_search()` function that takes a query string and runs a `qdrant_client.query_points()` operation:  
+   - Embed the query using the same embedding model.  
+   - Optionally apply filters based on metadata (e.g., search only within a course or topic).  
+   - Parse and return the relevant fields from the search results (e.g., the matched document text or metadata).
+
+5. **Plug Into Your RAG Pipeline**  
+   Swap out the search component in your RAG workflow with your `vector_search()` function.  
+   This modular design makes it easy to compare or switch between different retrieval methods (e.g., lexical vs. semantic).
+
+## ⚙️ Building a Qdrant Collections
+
+To create a [**Qdrant**](https://qdrant.tech/) collection, you’ll need to define the following:
+
+- **Collection name** – e.g., `zoom_camp_rag`, `zoom_camp_faq`
+- **Vector size** – dimensionality of the embedding vectors (e.g., `512`)
+- **Distance metric** – how similarity is calculated (e.g., `cosine`)
+
+Once the collection is initialized, you can begin embedding and indexing your data.
+
+The `upsert` operation in [**Qdrant**](https://qdrant.tech/) handles both:
+
+1. Embedding your text using the selected model, and  
+2. Uploading the resulting vectors (along with payload metadata) to the collection.
+
+For larger datasets, the [**Qdrant**](https://qdrant.tech/) Python client offers optimized methods such as `upload_collection()` and `upload_points()` to support batch inserts and enable parallel processing for faster indexing.
+
+
 ## ⚙️ Dependencies 
-**Dependencies are listed in `requirements.txt.`**
 
-To work with Qdrant in Python, you typically install two main libraries in your virtual environment:
+| **Package**              | **Function / Use Case**                              |
+|--------------------------|------------------------------------------------------|
+| [`tqdm`](https://pypi.org/project/tqdm/)               | Progress bars for loops                              |
+| [`notebook`](https://pypi.org/project/notebook/)       | Jupyter Notebook support                             |
+| [`openai`](https://platform.openai.com/docs)           | Interface with OpenAI API for LLM tasks              |
+| [`minsearch`](https://github.com/minsearch)     | Lightweight lexical search library                   |
+| [`pandas`](https://pypi.org/project/pandas/)           | Data manipulation and analysis                       |
+| [`scikit-learn`](https://pypi.org/project/scikit-learn/)| Machine learning utilities and vector prep           |
+| [`ipywidgets`](https://pypi.org/project/ipywidgets/)   | Interactive widgets for notebooks                    |
+| [`ipykernel`](https://pypi.org/project/ipykernel/)     | Kernel backend for running Python in notebooks       |
+| [`docker`](https://www.docker.com) | Containerization support (for local [**Qdrant**](https://qdrant.tech/), etc.)    |
+| [`numpy`](https://pypi.org/project/numpy/)             | Numerical operations and array manipulation          |
 
-- **qdrant-client**: The official Python client for connecting to Qdrant. Official clients are also available for other languages.
-- **fastembed**: Qdrant's own library specifically for vectorizing data. It simplifies the process of turning data into vectors and uploading them to Qdrant. FastEmbed uses ONNX runtime, making it lightweight and CPU-friendly, often faster than PyTorch Sentence Transformers, and supports local inference.
 
----
-[SAMPLE TEMPLATE FOR TABLE]
-| **Package**              | **Function / Use Case**                    |
-|--------------------------|--------------------------------------------|
-| **`torch`**              | Core deep learning framework (PyTorch)     |
-| **`torchvision`**        | Vision datasets and transforms             |
-| **`tqdm`**               | Progress bars for loops                    |
-| **`matplotlib`**         | Basic plotting and visualizations          |
-| **`numpy`**              | Numerical operations and arrays            |
-| **`ipython`**            | Interactive shell for notebooks            |
-| **`pillow`**             | Image processing utilities                 |
-| **`wandb`**              | Experiment tracking and visualization      |
+#### Qdrant Setup 
+To work with [**Qdrant**](https://qdrant.tech/) in Python, install these libraries in your virtual environment:
+
+```bash
+pip install -q "qdrant-client[fastembed]>=1.14.2"
+```
+
+**Import Libraries:** 
+
+```python
+from qdrant_client import QdrantClient, models
+```
+
+- **qdrant-client**: The official Python client for connecting to [**Qdrant**](https://qdrant.tech/). Official clients are also available for other languages.
+- **fastembed**: [**Qdrant's**](https://qdrant.tech/) own library specifically for vectorizing data. It simplifies the process of turning data into vectors and uploading them to [**Qdrant**](https://qdrant.tech/). FastEmbed uses ONNX runtime, making it lightweight and CPU-friendly, often faster than PyTorch Sentence Transformers, and supports local inference.
 
 ## ⚙️ Getting Started  
 
 #### 1. Clone the Repository
 ```bash
-git clone https://github.com/milanimcgraw/WandB-for-Gen-AI-Models.git
+git clone https://github.com/milanimcgraw/Vector-Search-with-.git
 cd WandB-for-Gen-AI-Models
 ```
 #### 2. Install Dependencies
@@ -87,16 +134,9 @@ pip install -r requirements.txt
 
 ## ⚙️ Qdrant Setup (Docker)
 
-Qdrant is flexible and can be run in various ways, including on your own infrastructure, Kubernetes, or in a managed cloud. For local setup, you can use a **Docker container**.
+[**Qdrant**](https://qdrant.tech/) is flexible and can be run in various ways, including on your own infrastructure, Kubernetes, or in a managed cloud. For local setup, you can use a **Docker container**.
 
-
-### Install qdrant and fastembed:
-
-```bash
-pip install -q "qdrant-client[fastembed]>=1.14.2"
-```
-
-### Run in Docker:
+**Pull the image and start the container using the following commands**:
 
 ```bash
 docker pull qdrant/qdrant
@@ -106,102 +146,132 @@ docker run -p 6333:6333 -p 6334:6334 \
    qdrant/qdrant
 ```
 
-- After pulling the Qdrant Docker image, you can run the container, mounting local storage to ensure data persistence.
-- Running Qdrant in Docker provides immediate access to its Web UI, which is beneficial for visually studying data and semantic similarity.
+**Listening at ports:***
+
+- 6333 – REST API port
+- 6334 – gRPC API port
+
+***Initialize Client:**
+
+```python
+client = QdrantClient("http://localhost:6333") 
+```
+
+To help you explore your data visually, [**Qdrant**](https://qdrant.tech/) provides a built-in [**Web UI**](http://localhost:6333/dashboard), available in both [**Qdrant**](https://qdrant.tech/) Cloud and local instances. You can use it to inspect collections, check system health, and even run simple queries.
+
+---
 
 # ⚙️ Additional Information
 
-## Key Entities: Points and Collections
+### Key Entities: Points and Collections
 
-When setting up a Qdrant solution, you operate with two main entities:
+- **Point**  
+  A ***point*** represents a single data item stored in [**Qdrant**](https://qdrant.tech/). In the context of a course-based Q&A system, each point might represent an answer, along with its associated metadata.
 
-- **Point**: Represents a data point in Qdrant. In the context of course Q&A, a point would be an answer along with its metadata.
-  - Each point has an ID (e.g., incremental integers or UUIDs).
-  - It contains an embedding vector (or several vectors), generated by models like Gina, representing the semantic content (e.g., of an answer).
-  - It includes optional metadata, referred to as payload (e.g., course and section information).
-- **Collection**: A container for data points. It's typically designed to solve a single conceptual business problem (e.g., a collection for course FAQs).
-  
-## Creating and Populating Collections
+  **Each point consists of:**
+  - A unique **ID** (e.g., an integer or UUID)
+  - An **embedding vector** (or multiple vectors), typically generated by a model like `GinaAI`, representing the semantic meaning of the content
+  - An optional **payload**, also known as metadata (e.g., course name, section ID, topic)
 
-**To create a Qdrant collection, you must provide**:
+Collections define the vector size and distance metric used across all points within them.
 
-- A collection name (e.g., zoom_camp_rag or Zoom_camp_FAQ).
-- The size (dimensionality) of the embedding vectors (e.g., 512 dimensions).
-- The distance metric used to compare vectors (e.g., cosine similarity).
+- **📁 Collection**  
+  A ***collection*** is a logical container that holds related points. Each collection is typically scoped to a single conceptual or business use case—for example, a course FAQ system or support chatbot knowledge base.
 
-Once created, you can embed and insert your data points into the collection. The upsert operation handles both fetching/downloading the selected embedding model and then embedding each piece of text into vectors before uploading them to the Qdrant collection. For larger datasets, batch upserting operations (upload_collection, upload_points) offered by the Python client can improve efficiency and allow for parallelization.
+### Embeddings vs. Metadata (Payload)
 
-## How Semantic Search Works
+[**Qdrant**](https://qdrant.tech/) stores two types of data for each point: **embeddings** and **metadata** (also called *payload*). Each serves a distinct purpose in the search process:
 
-Once data is indexed, semantic search works by:
+- **Embeddings**  
+  These are the vectorized representations of data used for semantic search. In a Q&A system, both questions and answers are ideal candidates for embedding—allowing the system to retrieve conceptually similar content even when different words are used.
 
-1. Taking an incoming query (question).
-2. Embedding the query using the same model that embedded the stored data.
-3. Using the vector index to compare the query vector to all stored answers.
-4. Finding the closest (most semantically similar) answer based on the configured distance metric (e.g., cosine similarity).
-5. Returning the most similar answers, ranked by their similarity scores.
+  > Example: *"flying mouse"* might return results related to *"bat"* due to shared semantic meaning.
+
+- **Metadata (Payload)**  
+  Metadata is used for structured filtering. While not involved in semantic similarity scoring, it enables users to narrow down search results based on specific attributes—such as course name, section, or topic.
+
+  > Example: Retrieve only answers from `Section 3` of the `Biology 101` course.
+
+
+### Semantic Search
+
+Once your data is indexed in [**Qdrant**](https://qdrant.tech/), semantic search enables retrieval based on meaning rather than keywords. The process follows these steps:
+
+1. **Receive the Query:** A user submits a question or search prompt.
+
+2. **Embed the Query:** The input is transformed into a vector using the same embedding model used for the stored data.
+
+3. **Compare Vectors:** [**Qdrant**](https://qdrant.tech/) compares the query vector against all stored vectors using the configured distance metric (e.g., **cosine similarity**).
+
+4. **Rank by Similarity:** The closest matches—those with the highest semantic similarity—are identified.
+
+5. **Return Results:** A ranked list of the most relevant answers is returned, along with their associated metadata or payloads (if desired).
+
 
 ### Approximate Nearest Neighbor (ANN) Search
 
-The "closest neighbor" search performed by vector indexes is typically approximate, not exact, especially at scale. This is due to the inherent nature of vector search with large vectors and the need for search speed. The search speed and quality depend on the selection of the vector index. Qdrant has a custom vector index implementation designed for this.
+In large-scale vector search, finding the *exact* nearest neighbor for a given query can be computationally expensive. To balance speed and accuracy, most vector databases—including [**Qdrant**](https://qdrant.tech/), use **Approximate Nearest Neighbor (ANN)** algorithms.
+
+ANN search finds results that are *close enough* to the true nearest neighbors, significantly improving performance while maintaining high-quality results.
+
+- ANN enables scalable, high-speed semantic search even across millions of vectors.
+- The trade-off is a small loss in accuracy in favor of much faster retrieval times.
+- [**Qdrant**](https://qdrant.tech/) uses a custom ANN implementation optimized for both speed and recall, making it well-suited for real-time applications like RAG systems.
+
 
 ### Adding Filters for Finer Results
 
-You can run semantic search with filters to get more fine-grained results. This uses the metadata (payload) that was uploaded with the embeddings (e.g., course or section).
+Semantic search can be further refined using **filters** based on metadata (payload), such as course name, section, or topic. This allows you to constrain search results to specific subsets of your data.
+This filtered search behavior ensures more relevant and context-specific responses, especially in Retrieval-Augmented Generation (RAG) workflows.
 
-- Qdrant's vector index implementation is specifically designed to make semantic similarity search with filters accurate, as filtering conditions can typically affect vector indexes.
-- To work effectively with filtering, a specific index needs to be switched on in Qdrant.
-- This allows you to ask specific questions about a particular course or section, restricting the search to a subset of your data. For example, searching for "late homeworks" specifically within the "data engineering" course yields a different answer than for "machine learning".
+- [**Qdrant**](https://qdrant.tech/) supports **filtered semantic search**, enabling precise queries without sacrificing performance.
+- Filters operate on the metadata fields stored alongside each embedded vector.
+- To use filters effectively, [**Qdrant**](https://qdrant.tech/) must enable a specific **filterable index** on those metadata fields.
+- This approach is ideal for use cases like course Q&A systems, where users may want results scoped to a particular course or section.
 
----
-### Embeddings vs. Metadata
+> Example:  
+> Searching for *"late homeworks"* in the **Data Engineering** course yields a different result than the same query in the **Machine Learning** course
 
-- **Embeddings**: Fields that make sense to be used for semantic search. This data is vectorized to be searched against by meaning. In a Q&A system, questions and answers are good candidates for embeddings because they might have different keywords but similar meaning.
-- **Metadata (Payload)**: Data that makes more sense for strict filtering. This information is stored alongside the embeddings but not directly used for semantic similarity. For instance, in a course Q&A system, "course" or "section" names are suitable for metadata, allowing users to ask specific questions about a particular section or course.
+### Advanced Search: Hybrid Search
 
---- 
+**Hybrid search** refers to combining more than one retrieval method—typically lexical (keyword-based) and semantic (vector-based)—to produce more relevant and robust search results.
 
-## Advanced Search: Hybrid Search
+This approach is especially useful because user queries can vary widely. Some users enter short, keyword-heavy searches, like `"qdrant filters setup"`, while others write full natural language questions, such as `"How do I add filters in Qdrant for course-specific search?"`. A purely semantic or purely keyword-based system might perform well on one type but poorly on the other.
 
-Hybrid search is a broader term describing systems that use more than one search method to find the most relevant documents. It's particularly useful because user queries can vary widely:
+Hybrid search serves both types of users by leveraging the strengths of each method. It improves recall for exact matches while still capturing the intent behind more conversational queries. This makes it a powerful option for user-facing applications like chatbots, course assistants, or knowledge retrieval systems.
 
-- Some users prefer keyword-like search queries (e.g., "Google-like" with a few keywords).
-- Others, especially in chatbot scenarios, will type questions using natural language.
+In practice, hybrid search often combines the results or scores from both methods—for example, by blending BM25 keyword relevance with cosine similarity from vector search.
 
-Hybrid search aims to serve both types of users and prevent losing customers due to an inability to express their intent in a desired way.
 
 ### Keyword-Based Search with Sparse Vectors (BM25)
 
-Surprisingly, keyword-based search can be implemented as vector search but using sparse vectors.
+Keyword-based search can be implemented using **sparse vectors**—vectors where most dimensions are zero. This approach focuses on exact term matching rather than semantic similarity and is ideal for use cases involving identifiers or precise keywords (e.g., `"pandas"`). Sparse vector search with BM25 is a powerful and efficient retrieval method—especially when paired with semantic models in hybrid search setups.
 
-- Sparse vectors: Most dimensions are zeros; only non-zero dimensions are stored, saving resources.
-- They focus on the exact presence of particular words or phrases, not semantic meaning.
-- Useful when users provide identifiers or exact terms (e.g., a specific library name like "pandas"). Semantic search might struggle with these exact matches.
-- Sparse vectors have a flexible dictionary and can virtually support new words, unlike dense models with fixed tokenizers.
+Key characteristics of **sparse vectors:**
 
-BM25 (Best Matching 25) is an industry standard method to implement keyword-based search with sparse vectors.
+- Most dimensions are zero; only non-zero dimensions are stored, improving efficiency.
+- They capture the presence or absence of specific words, not meaning.
+- Ideal for matching exact terms like library names, variable names, or error codes.
+- Use a flexible dictionary and support new or rare words without retraining.
 
-- It calculates document relevancy based on a query.
-- TF (Term Frequency): Rewards documents with multiple occurrences of query terms, but diminishes impact for excessive duplicates.
-- IDF (Inverse Document Frequency): A global component that boosts the importance of rare words. Qdrant has built-in functionality to handle IDF calculation within collection configuration.
-- BM25 is a purely statistical model, not a neural one, so it doesn't require heavy inference computations and is faster than dense embeddings for vectorization.
-- BM25/sparse vector scores are unbounded and not compatible with cosine distance; they can only be compared for results from a single query, not across different queries.
-- BM25 may struggle with longer, natural language queries.
+[**Qdrant**](https://qdrant.tech/) supports **BM25 (Best Matching 25)** for sparse vector search, a standard algorithm in traditional information retrieval:
+
+- **TF (Term Frequency):** Rewards documents where query terms appear more often, with diminishing returns for repetition.
+- **IDF (Inverse Document Frequency):** Increases the weight of rare words and lowers it for common ones. [**Qdrant**](https://qdrant.tech/) handles IDF scoring internally via collection configuration.
+- **Statistical model (not neural):** No inference required—faster and more lightweight than dense models.
+- **Score properties:** BM25 scores are unbounded and not normalized. They work only for ranking within a single query and can’t be used across different queries.
+- **Limitations:** BM25 often underperforms on long-form or conversational queries, where understanding meaning is more important than exact matches.
 
 ### Combining Dense and Sparse Search
 
-Qdrant allows you to configure a single collection with multiple named vectors (e.g., one for dense embeddings and one for BM25 sparse vectors). This is useful for testing different models or creating a search engine that is fast in some cases and uses more sophisticated methods for others.
+[**Qdrant**](https://qdrant.tech/) allows you to configure a single collection with multiple named vectors (e.g., one for dense embeddings and one for BM25 sparse vectors). This is useful for testing different models or creating a search engine that is fast in some cases and uses more sophisticated methods for others.
 
-You can build multi-stage retrieval pipelines using Qdrant's universal query API and prefetching mechanism.
+You can build multi-stage retrieval pipelines using [**Qdrant's**](https://qdrant.tech/) universal query API and prefetching mechanism.
 
 - A common pipeline is to use a fast retriever (e.g., a small dense embedding model) to retrieve an initial set of documents, then rerank them using a better but slower model (e.g., a larger neural network or a cross-encoder).
 - Reranking is about reordering retrieved points based on additional rules (e.g., business rules) or using a superior model.
 - Fusion is a set of methods based on combining rankings from individual search methods.
-  - Reciprocal Rank Fusion (RRF) is a commonly used algorithm for fusion. It calculates an intermediate score based on individual rankings (not raw scores) from different methods (e.g., dense and sparse). RRF identifies documents that are consistently ranked well by multiple methods, even if they aren't the top result from any single method. RRF is built into Qdrant.
-
-### Beyond Dense and Sparse
-
-The field of search is continually evolving. Beyond dense and sparse models, multi-vector representations and late interaction models are gaining traction. These approaches represent documents as multiple lower-dimensional embeddings, offering superior quality but are more resource-heavy.
+  - Reciprocal Rank Fusion (RRF) is a commonly used algorithm for fusion. It calculates an intermediate score based on individual rankings (not raw scores) from different methods (e.g., dense and sparse). RRF identifies documents that are consistently ranked well by multiple methods, even if they aren't the top result from any single method. RRF is built into [**Qdrant**](https://qdrant.tech/).
 
 
 ## ⚙️ License
@@ -209,5 +279,7 @@ This project is released under MIT license.
 
 ---
 > ## 📌 Credits
-> 📦  This project builds on concepts and starter code introduced in the [Carbon Aware Computing for GenAI Developers](https://learn.deeplearning.ai/courses/carbon-aware-computing-for-genai-developers) course offered through [DeepLearning.AI](https://www.deeplearning.ai/short-courses/), in collaboration with [Google Cloud](https://cloud.google.com/) and taught by [Nikita Namjoshi](https://nikitanamjoshi.substack.com/), Developer Advocate at Google Cloud and Google Fellow on the Permafrost Discovery Gateway.
-> While the original instructional materials provided foundational examples, this implementation has been  customized and extended.
+> 📦  This project builds on concepts and starter code introduced in the [LLM Zoomcamp](https://github.com/DataTalksClub/llm-zoomcamp/tree/main) course by [DataTalksClub](https://github.com/DataTalksClub). > > **Additional sources include:** 
+> * [Cohort 2025| Vector Search using Qdrant study guide & FAQ by Nitin Gupta](https://github.com/niting9881/llm-zoomcamp/blob/main/02-vector-search/README.md)
+> * [Cohort 2025| Cognee and dlt workshop study guide & FAQ by Nitin Gupta](https://github.com/niting9881/llm-zoomcamp/tree/main/02-vector-search/workshop/dlt)
+> While the original instructional materials provided foundational examples, this implementation has been customized and extended.

@@ -1,0 +1,10 @@
+tqdm
+notebook==7.1.2
+openai
+minsearch
+pandas
+scikit-learn
+ipywidgets
+ipykernel
+docker
+numpy
