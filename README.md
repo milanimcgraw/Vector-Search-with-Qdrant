@@ -279,7 +279,8 @@ This project is released under MIT license.
 
 ---
 > ## 📌 Credits
-> 📦  This project builds on concepts and starter code introduced in the [LLM Zoomcamp](https://github.com/DataTalksClub/llm-zoomcamp/tree/main) course by [DataTalksClub](https://github.com/DataTalksClub). > > **Additional sources include:** 
+> 📦  This project builds on concepts and starter code introduced in the [LLM Zoomcamp](https://github.com/DataTalksClub/llm-zoomcamp/tree/main) course by [DataTalksClub](https://github.com/DataTalksClub).
+> **Additional sources include:** 
 > * [Cohort 2025| Vector Search using Qdrant study guide & FAQ by Nitin Gupta](https://github.com/niting9881/llm-zoomcamp/blob/main/02-vector-search/README.md)
 > * [Cohort 2025| Cognee and dlt workshop study guide & FAQ by Nitin Gupta](https://github.com/niting9881/llm-zoomcamp/tree/main/02-vector-search/workshop/dlt)
 > While the original instructional materials provided foundational examples, this implementation has been customized and extended.
