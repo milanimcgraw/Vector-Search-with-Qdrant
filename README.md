@@ -1,4 +1,4 @@
-# Semantic Search with Qdrant
+# Vector Search with Qdrant
 
 ## ⚙️ Project Overview
 
